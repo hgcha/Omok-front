@@ -1,5 +1,8 @@
 export default function decideWinner(previousStonePosition, board) {
 
+    if(previousStonePosition.row === null && previousStonePosition.col === null)
+        return;
+
     let startPoints = [
         //Checking horizontal line
         {
@@ -65,8 +68,8 @@ export default function decideWinner(previousStonePosition, board) {
         for(let j = 0; j < length; j++) {
             if(board[row][col] === board[previousStonePosition.row][previousStonePosition.col]) {
                 count++;
-            } else {
                 maxCount = Math.max(maxCount, count);
+            } else {
                 count = 0;
             }
     
