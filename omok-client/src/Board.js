@@ -3,8 +3,9 @@ import Row from './Row.js';
 import decideWinner from './decideWinner.js';
 import './App.css';
 import { connection, connectToServer, disconnectFromServer } from './network.js';
+import './bootstrap.min.css'
 
-export default function Board() {
+export default function Board({ index }) {
 
     const [board, setBoard] = useState(Array(19).fill(Array(19).fill(null)));
     const [turn, setTurn] = useState('black');
@@ -80,10 +81,10 @@ export default function Board() {
 
     return (
         <>
-            <p>
+            <div className='d-block p-2 text-bg-primary rounded mb-3 shadow'>
                 {content}
-            </p>
-            <div>
+            </div>
+            <div className='d-block rounded shadow bg-white'>
                 {rows}
             </div>
         </>
