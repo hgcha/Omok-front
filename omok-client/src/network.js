@@ -1,34 +1,32 @@
-export let userListConnection = null;
-export let connection = null;
+export let mainServerConnection = null;
+export let gameServerConnection = null;
 let intervalId = null;
 
-export function connectToUserListServer(nickname, setUserList) {
-    userListConnection = new WebSocket("ws://localhost:8080/userList");
-    userListConnection.onopen = () => {
-        userListConnection.send(JSON.stringify({type: "SET_NICKNAME", nickname: nickname}));
-        intervalId = setInterval(() => {
-            userListConnection.send(JSON.stringify({type: "GET_USERLIST"}));
-        }, 1000);
-    };
-    userListConnection.onmessage = response => {
-        setUserList(JSON.parse(response.data));
-    };
-
-    console.log('Connected to user list server!');
+export function connectToMainServer() {
+    mainServerConnection = new WebSocket("ws://localhost:8080/main");
 }
 
-export function disconnectFromUserListServer() {
-    userListConnection.close();
-    if(intervalId) clearInterval(intervalId);
-    console.log("Disconnected from user list server!");
-}
+//     mainServerConnection.onmessage = response => {
+//         const data = JSON.parse(response.data);
+//         console.log(data.gameList);
+//         console.log(data.userList);
+//         setGameList(data.gameList);
+//         setUserList(data.userList); 
+//     };
 
-export function disconnectFromServer() {};
-export function connectToServer() {};
-
-// export function sendToServer(object) {
-//     while(!connection.readyState === 1) {
-//     }
-//     connection.send(object);
-//     console.log('Send to server: ' + object);
+//     console.log('Connected to main server!');
 // }
+
+export function disconnectFromMainServer() {
+    mainServerConnection.close();
+    if(intervalId === null) clearInterval(intervalId);
+    console.log("Disconnected from main server!");
+}
+
+export function connectToGameServer(index) {
+    gameServerConnection = new WebSocket("ws://localhost:8080/game/" + index);
+}
+
+export function disconnectFromGameServer() {
+    gameServerConnection.close();
+}

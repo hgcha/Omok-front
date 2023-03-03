@@ -1,18 +1,21 @@
-import axios from 'axios';
 import { useContext } from 'react';
 import Board from './Board';
+import { mainServerConnection } from './network';
 import { NicknameContext } from './NicknameContext';
 
-export default function CreateGame() {
+export default function CreateGame({ setGameIndex }) {
 
     const nickname = useContext(NicknameContext);
 
     function handleClick() {
-        axios.post("http://localhost:8080/createGame", {user: nickname}, {withCredentials: true})
-            .then(response => {
-                const index = response.data.index;
-                return <Board index={index}/>;
-            });
+        mainServerConnection.onmessage = (response) => {
+            const data = JSON.parse(response.data);
+            console.log(data);
+            if(data.status === "success") {
+                setGameIndex(data.index);
+            }
+        };
+        mainServerConnection.send(JSON.stringify({type: "CREATE_GAME", nickname: nickname}));
     }
 
     return (

@@ -1,8 +1,12 @@
-import { connection } from './network.js';
+import { gameServerConnection } from './network.js';
 import whiteStone from './images/whiteStone.png';
 import blackStone from './images/blackStone.png';
+import { useContext } from 'react';
+import { NicknameContext } from './NicknameContext.js';
 
 export default function Square({ line, rowNumber, position, board, setBoard, turn, setTurn, color, winner, setBeforeMove }) {
+
+    const nickname = useContext(NicknameContext);
 
     function handleClick() {
         if (board[rowNumber][position])
@@ -16,13 +20,13 @@ export default function Square({ line, rowNumber, position, board, setBoard, tur
         
         const StonePositionMessage = {
             type: 'GET_OPPONENT_POSITION',
+            nickname: nickname,
             color: color,
             row: rowNumber,
             col: position
         };
 
-        console.log(connection);
-        connection.send(JSON.stringify(StonePositionMessage));
+        gameServerConnection.send(JSON.stringify(StonePositionMessage));
         setTurn(turn === 'white' ? 'black' : 'white');
         setBeforeMove({row: rowNumber, col: position});
         setBoard(nextBoard);

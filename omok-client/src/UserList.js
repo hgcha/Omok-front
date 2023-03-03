@@ -3,16 +3,8 @@ import { connectToUserListServer, disconnectFromUserListServer } from "./network
 import { NicknameContext } from "./NicknameContext";
 import "./bootstrap.min.css";
 
-export default function UserList() {
-    
-    const [userList, setUserList] = useState([]);
-    const nickname = useContext(NicknameContext);
-
-    useEffect(() => {
-        connectToUserListServer(nickname, setUserList);
-        return disconnectFromUserListServer;
-    }, []);
-        
+export default function UserList({ userList }) {
+            
     return (
         <div className="list-group list-group-flush">
             <p><b>userList</b></p>

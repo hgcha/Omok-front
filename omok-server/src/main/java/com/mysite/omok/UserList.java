@@ -1,19 +1,26 @@
 package com.mysite.omok;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import jakarta.websocket.Session;
+import java.util.LinkedList;
+import java.util.List;
 
 public class UserList {
 
-	private static final Map<Session, String> userList = Collections.synchronizedMap(new HashMap<Session, String>());
+	private static final List<User> userList = Collections.synchronizedList(new LinkedList<User>());
 	
 	private UserList() {}
 	
-	public static Map<Session, String> getUserList() {
+	public static List<User> getUserList() {
 		return userList;
+	}
+	
+	public static String[] getUserNicknameList() {
+		String[] userNicknameList = new String[userList.size()];
+		for(int i = 0; i < userNicknameList.length; i++) {
+			userNicknameList[i] = userList.get(i).getNickname();
+		}
+		
+		return userNicknameList;
 	}
 	
 }

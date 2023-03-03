@@ -1,27 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Row from './Row.js';
 import decideWinner from './decideWinner.js';
 import './App.css';
-import { connection, connectToServer, disconnectFromServer } from './network.js';
+import { gameServerConnection, connectToGameServer, disconnectFromGameServer, disconnectFromMainServer, mainServerConnection } from './network.js';
 import './bootstrap.min.css'
+import { NicknameContext } from './NicknameContext.js';
 
-export default function Board({ index }) {
+export default function Board({ gameIndex, setGameIndex }) {
 
     const [board, setBoard] = useState(Array(19).fill(Array(19).fill(null)));
     const [turn, setTurn] = useState('black');
     const [color, setColor] = useState(null);
     const [beforeMove, setBeforeMove] = useState({ row: null, col: null });
+    const nickname = useContext(NicknameContext);
+
+    console.log('board: ' + gameIndex);
 
     useEffect(() => {
-        connectToServer();
-        return disconnectFromServer;
+        mainServerConnection.onmessage = null;
+
+        connectToGameServer(gameIndex);
+        gameServerConnection.onopen = () => {
+            gameServerConnection.send(JSON.stringify({ type: "ENTER_GAME", nickname: nickname }));
+        }
+        return () => {
+            gameServerConnection.send(JSON.stringify({ type: "LEAVE_GAME", nickname: nickname }));
+            disconnectFromGameServer();
+        }
     }, []);
 
     useEffect(() => {
-        if(connection) {
-            connection.onmessage = onMessage;
+        if (gameServerConnection) {
+            gameServerConnection.onmessage = onMessage;
         }
-    }, [onMessage]);    
+    }, [onMessage]);
 
     function onMessage(message) {
         const data = JSON.parse(message.data);
@@ -51,6 +63,11 @@ export default function Board({ index }) {
             default:
                 break;
         }
+    }
+
+    function handleLeaveButtonClick() {
+        gameServerConnection.send(JSON.stringify({ type: "GAME_LEAVE", nickname: nickname }));
+        setGameIndex(null);
     }
 
     const winner = decideWinner(beforeMove, board);
@@ -84,6 +101,9 @@ export default function Board({ index }) {
             <div className='d-block p-2 text-bg-primary rounded mb-3 shadow'>
                 {content}
             </div>
+            <button onClick={handleLeaveButtonClick}>
+                LEAVE
+            </button>
             <div className='d-block rounded shadow bg-white'>
                 {rows}
             </div>
