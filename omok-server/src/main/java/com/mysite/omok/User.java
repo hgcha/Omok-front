@@ -2,31 +2,28 @@ package com.mysite.omok;
 
 import jakarta.websocket.Session;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
+@RequiredArgsConstructor
 public class User {
 
-	private String nickname;
-	private Session session;
-	private Session gameServerSession;
-	private Game game = null;
-	
-	public User(String nickname, Session session) {
-		this.nickname = nickname;
-		this.session = session;
-	}
-	
-	public void enterGame(Game game) {
-		game.acceptPlayer(this);
-		this.game = game;
-	}
-	
-	public void leaveGame(Game game) {
-		game.releasePlayer(this);
-		this.game = null;
+	private final String nickname;
+	private final Session session;
+	private boolean isReady = false;
+
+	public void setReady(boolean isReady) {
+		this.isReady = isReady;
 	}
 
-	public void setGameServerSession(Session session) {
-		this.gameServerSession = session;
+	public Map<String, Object> getInfo() {
+		Map<String, Object> info = new HashMap<>();
+		info.put("nickname", nickname);
+		info.put("ready", Boolean.valueOf(isReady));
+		return info;
 	}
+
 }
