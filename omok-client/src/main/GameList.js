@@ -4,7 +4,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-export default function GameList({ gameList, nickname }) {
+export default function GameList({ gameList, username }) {
     
     const navigate = useNavigate();
     
@@ -19,7 +19,7 @@ export default function GameList({ gameList, nickname }) {
                             p={0} 
                             onClick={() => navigate(
                                 "/game/" + game[0],
-                                { state: { nickname: nickname } }
+                                { state: { username: username } }
                             )}
                         >
                             <span style={{float: 'left', marginLeft: 10}}>{game[1]}</span>

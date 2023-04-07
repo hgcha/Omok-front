@@ -1,5 +1,6 @@
 package com.mysite.omok;
 
+import com.mysite.omok.Member.Player;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,9 +12,9 @@ class GameTest {
     @DisplayName("acceptPlayer가 정상적으로 작동하는지 확인")
     void releasePlayerTest() {
         Game game = new Game("Hello!", 1L);
-        User userA = new User("UserA", null);
-        game.acceptPlayer(userA);
-        game.releasePlayer(userA);
+        Player playerA = new Player("UserA", null);
+        game.acceptPlayer(playerA);
+        game.releasePlayer(playerA);
 
         assertThat(game.getPlayers().size()).isEqualTo(0);
     }
@@ -22,15 +23,15 @@ class GameTest {
     @DisplayName("acceptPlayer가 정상적으로 작동하는지 확인")
     void acceptPlayerTest() {
         Game game = new Game("GameA", 2L);
-        User userA = new User("UserA", null);
-        User userB = new User("UserB", null);
-        User userC = new User("UserC", null);
+        Player playerA = new Player("UserA", null);
+        Player playerB = new Player("UserB", null);
+        Player playerC = new Player("UserC", null);
 
-        game.acceptPlayer(userA);
+        game.acceptPlayer(playerA);
         assertThat(game.getPlayers().size()).isEqualTo(1);
 
-        game.acceptPlayer(userB);
-        game.acceptPlayer(userC);
+        game.acceptPlayer(playerB);
+        game.acceptPlayer(playerC);
         assertThat(game.getPlayers().size()).isEqualTo(2);
     }
 

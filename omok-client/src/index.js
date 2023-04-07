@@ -1,35 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {
-  createBrowserRouter,
-  RouterProvider
-} from "react-router-dom";
-import LoginForm from "./LoginForm";
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider } from '@chakra-ui/react';
 import './index.css';
-import Main from './main/Main';
-import Game from './game/Game';
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <LoginForm />,
-  },
-  {
-    path: "/main",
-    element: <Main />,
-  },
-  {
-    path: "/game/:gameIndex",
-    element: <Game />,
-  }
-]);
+import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <ChakraProvider>
-      <RouterProvider router={router} />
-    </ChakraProvider>
+  <App />
 );
 
 // If you want to start measuring performance in your app, pass a function

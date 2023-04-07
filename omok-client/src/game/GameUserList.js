@@ -20,7 +20,7 @@ export default function GameUserList({ gameUserList }) {
                         <>
                             <CardBody maxH={30}>
                                 <Center>
-                                    {gameUser.nickname} {gameUser.ready ? "✅" : ""} 
+                                    {gameUser.username} {gameUser.ready ? "✅" : ""} 
                                 </Center>
                             </CardBody>
                             { idx === gameUserList.length - 1 ? <Divider/> : null}

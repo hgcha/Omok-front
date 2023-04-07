@@ -2,6 +2,7 @@ package com.mysite.omok;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysite.omok.Member.Player;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
@@ -15,16 +16,16 @@ import java.util.*;
 @ServerEndpoint("/main/{nickname}")
 public class MainWebsocket {
 
-    private static Set<User> userSet = Collections.synchronizedSet(new HashSet<>());
+    private static Set<Player> playerSet = Collections.synchronizedSet(new HashSet<>());
     private static List<Game> gameList = GameList.getGameList();
     private static Logger logger = LoggerFactory.getLogger(MainWebsocket.class);
 	private static ObjectMapper objectMapper = new ObjectMapper();
-    private User user;
+    private Player player;
 
     @OnOpen
     public void onOpen(Session session, @PathParam("nickname") String nickname) throws Exception {
-        user = new User(nickname, session);
-        userSet.add(user);
+        player = new Player(nickname, session);
+        playerSet.add(player);
         logger.info(nickname + "이 입장하셨습니다.");
     }
 
@@ -36,7 +37,7 @@ public class MainWebsocket {
 
         switch (req.get("type")) {
             case "GET_INFO":
-                resp.put("userList", userSet.stream().map(User::getNickname).toArray());
+                resp.put("userList", playerSet.stream().map(Player::getUsername).toArray());
                 resp.put("gameList", gameList.stream().map(Game::getInfo).toArray());
 
                 session.getAsyncRemote().sendText(objectMapper.writeValueAsString(resp));
@@ -62,8 +63,8 @@ public class MainWebsocket {
 
     @OnClose
     public void onClose() {
-        userSet.remove(user);
-        logger.info(user.getNickname() + "님이 나가셨습니다.");
+        playerSet.remove(player);
+        logger.info(player.getUsername() + "님이 나가셨습니다.");
     }
     
     @OnError

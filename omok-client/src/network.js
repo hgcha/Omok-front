@@ -1,6 +1,5 @@
 export let mainServerConnection = null;
 export let gameServerConnection = null;
-let intervalId = null;
 
 export function connectToMainServer(nickname) {
     mainServerConnection = new WebSocket("ws://localhost:8080/main/" + nickname);
@@ -8,7 +7,6 @@ export function connectToMainServer(nickname) {
 
 export function disconnectFromMainServer() {
     mainServerConnection.close();
-    if (intervalId !== null) clearInterval(intervalId);
     console.log("Disconnected from main server!");
 }
 

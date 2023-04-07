@@ -16,14 +16,14 @@ export default function UserList({ userList }) {
             </CardHeader>
             <Stack spacing={1}>
                 {userList.map(user => 
-                    <>
-                        <CardBody maxH={30}>
+                    <div key={user}>
+                        <CardBody>
                             <Center>
                                 {user}
                             </Center>
                         </CardBody>
                         <Divider />
-                    </>
+                    </div>
                 )}
             </Stack>
         </Card>

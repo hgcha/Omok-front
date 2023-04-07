@@ -8,30 +8,43 @@ import {
     Center,
 } from "@chakra-ui/react";
 
-export default function Display({ isFull, isAllReady, isPlaying, setIsPlaying, winner, turn, color, withdrawer }) {
+export default function Display({ isFull, isAllReady, isPlaying, setIsPlaying, winner, turn, color, withdrawer, init, reportResult }) {
 
     const [count, setCount] = useState(3);
 
     useEffect(() => {
-        if (isAllReady) {
+        if (winner !== null) {
+            if (count !== 0) {
+                setTimeout(() => {
+                    setCount(count => count - 1);
+                }, 1000)
+            } else {
+                if(winner === color) {
+                    reportResult();
+                }
+                init();
+                setCount(3);
+            }
+        } else if (isAllReady && !isPlaying) {
             if (count !== 0) {
                 setTimeout(() => {
                     setCount(count => count - 1);
                 }, 1000)
             } else {
                 setIsPlaying(true);
-                setCount(3);
+                setCount(5);
             }
         }
-    }, [isAllReady, count, setIsPlaying]);
+    }, [isAllReady, isPlaying, winner, count, setIsPlaying]);
 
     let content;
     if(winner !== null) {
         if(withdrawer !== null) {
-            content = (withdrawer === color ? "기권했습니다." : (withdrawer === "white" ? "백" : "흑") + "이 기권했습니다. 당신이 승리했습니다!");
+            content = (withdrawer === color ? "기권했습니다. " : (withdrawer === "white" ? "백" : "흑") + "이 기권했습니다. 승리했습니다! ");
         } else {
-            content = (winner === color ? "당신이 승리했습니다!" : "패배했습니다.");
+            content = (winner === color ? "승리했습니다! " : "패배했습니다. ");
         }
+        content += count + "초 후에 새로운 게임이 시작됩니다.";
     } else {
         if(isPlaying) {
             content = (turn === color ? "당신 차례입니다." : "상대 차례입니다.");

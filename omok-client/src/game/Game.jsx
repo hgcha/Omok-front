@@ -1,6 +1,7 @@
 import {
     useState,
     useEffect,
+    useContext,
 } from "react";
 import {
     Flex,
@@ -11,7 +12,6 @@ import {
     Center,
 } from "@chakra-ui/react";
 import {
-    useLocation,
     useNavigate,
     useParams,
 } from "react-router-dom";
@@ -25,33 +25,57 @@ import Board from "./Board";
 import GameUserList from "./GameUserList";
 import decideWinner from "./decideWinner";
 import Display from "./Display";
+import axios from "axios";
+import { LoginContext } from "../LoginContext";
+import { PlayContext } from "../PlayContext";
 
 export default function Game() {
 
-    const navigate = useNavigate();
-    const nickname = useLocation().state.nickname;
+    const { username } = useContext(LoginContext);
     const { gameIndex } = useParams();
     const [board, setBoard] = useState(Array(19).fill(Array(19).fill(null)));
     const [turn, setTurn] = useState("black");
     const [color, setColor] = useState(null);
     const [winner, setWinner] = useState(null);
     const [gameUserList, setGameUserList] = useState([{ 
-        nickname: nickname, 
+        username: username, 
         ready: false,
     }]);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const { isPlaying, setIsPlaying } = useContext(PlayContext);
     const [withdrawer, setWithdrawer] = useState(null);
     const isFull = gameUserList.length === 2;
     const isAllReady = isFull && gameUserList.every(gameUser => gameUser.ready === true);
+    const navigate = useNavigate();
+
+    function init() {
+        setBoard(Array(19).fill(Array(19).fill(null)));
+        setTurn("black");
+        setColor(null);
+        setWinner(null);
+        setGameUserList(gameUserList.map(gameUser => {
+            return { ...gameUser, ready: false };
+        }));
+        setIsPlaying(false);
+        setWithdrawer(null);
+    }
+
+    function reportResult() {
+        axios.post("http://localhost:8080/gameRecord", {
+            winnerColor: color,
+            winner: username,
+            loser: gameUserList.find(gameUser => gameUser.username !== username).username
+        })
+    }
 
     useEffect(() => {
+        console.log(username);
         mainServerConnection.onmessage = null;
-        connectToGameServer(gameIndex, nickname);
+        connectToGameServer(gameIndex, username);
 
         return () => {
             disconnectFromGameServer();
         }
-    }, [gameIndex, nickname]);
+    }, [gameIndex, username]);
 
     useEffect(() => {
         if (gameServerConnection) {
@@ -67,7 +91,9 @@ export default function Game() {
                         nextGameUserList = gameUserList.map(gameUser => {
                             return { ...gameUser };
                         });
-                        nextGameUserList.find(gameUser => gameUser.nickname === data.nickname).ready = data.ready;
+                        console.log("OPPONENT_READY_STATE", nextGameUserList, data);
+                        console.log("OPPONENT_READY_STATE_DATA_READY", data.ready)
+                        nextGameUserList.find(gameUser => gameUser.username === data.username).ready = data.ready;
                         setGameUserList(nextGameUserList);
                         break;
                     case 'SET_STONE_COLOR':
@@ -114,6 +140,8 @@ export default function Game() {
                             turn={turn}
                             color={color}
                             withdrawer={withdrawer}
+                            init={init}
+                            reportResult={reportResult}
                         />
                         <Flex>
                             <Button
@@ -150,13 +178,14 @@ export default function Game() {
                                             const nextGameUserList = gameUserList.map(gameUser => {
                                                 return { ...gameUser };
                                             });
-                                            const readyState = nextGameUserList.find(gameUser => gameUser.nickname === nickname).ready;
+                                            console.log(nextGameUserList);
+                                            const readyState = nextGameUserList.find(gameUser => gameUser.username === username).ready;
                                             gameServerConnection.send(JSON.stringify({ 
                                                 type: "OPPONENT_READY_STATE",
-                                                nickname: nickname,
+                                                username: username,
                                                 ready: !readyState,
                                             }));
-                                            nextGameUserList.find(gameUser => gameUser.nickname === nickname).ready = !readyState;
+                                            nextGameUserList.find(gameUser => gameUser.username === username).ready = !readyState;
                                             setGameUserList(nextGameUserList);
                                         }}
                                     >

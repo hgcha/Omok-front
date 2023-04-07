@@ -1,4 +1,4 @@
-package com.mysite.omok.User;
+package com.mysite.omok.Member;
 
 import jakarta.websocket.Session;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class Player {
 
-	private final String nickname;
+	private final String username;
 	private final Session session;
 	private boolean isReady = false;
 
@@ -21,7 +21,7 @@ public class Player {
 
 	public Map<String, Object> getInfo() {
 		Map<String, Object> info = new HashMap<>();
-		info.put("nickname", nickname);
+		info.put("username", username);
 		info.put("ready", Boolean.valueOf(isReady));
 		return info;
 	}

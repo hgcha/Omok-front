@@ -1,2 +1,6 @@
-package com.mysite.omok.GameRecord;public class GameRecordRepository {
+package com.mysite.omok.GameRecord;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface GameRecordRepository extends JpaRepository<GameRecord, Long> {
 }

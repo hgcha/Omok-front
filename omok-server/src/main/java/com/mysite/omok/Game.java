@@ -1,6 +1,7 @@
 package com.mysite.omok;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysite.omok.Member.Player;
 import com.mysite.omok.messages.SetColorMessage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,24 +18,24 @@ public class Game {
 
 	private static final Logger logger = LoggerFactory.getLogger(Game.class);
 	private static final ObjectMapper objectMapper = new ObjectMapper();
-	private final Set<User> players = new HashSet<>();
+	private final Set<Player> players = new HashSet<>();
 	private final String title;
 	private final Long index;
 
-	public boolean acceptPlayer(User user) {
+	public boolean acceptPlayer(Player player) {
 		if(isFull()) {
 			return false;
 		}
 
-		return players.add(user);
+		return players.add(player);
 	}
 	
-	public boolean releasePlayer(User user) {
+	public boolean releasePlayer(Player player) {
 		if(isEmpty()) {
 			return false;
 		}
 
-		return players.remove(user);
+		return players.remove(player);
 	}
 
 	public boolean isEmpty() {
@@ -53,19 +54,19 @@ public class Game {
 		return false;
 	}
 
-	public Optional<User> getOpponent(String nickname) {
-		return players.stream().filter(user -> !user.getNickname().equals(nickname)).findAny();
+	public Optional<Player> getOpponent(String username) {
+		return players.stream().filter(player -> !player.getUsername().equals(username)).findAny();
 	}
 
-	public User findPlayerByNickname(String nickname) {
-		return players.stream().filter(user -> user.getNickname().equals(nickname)).findAny().get();
+	public Player findPlayerByNickname(String username) {
+		return players.stream().filter(player -> player.getUsername().equals(username)).findAny().get();
 	}
 
 	public boolean isAllReady() {
 		if(players.size() != 2) {
 			return false;
 		}
-		for(User player : players) {
+		for(Player player : players) {
 			if(!player.isReady()) {
 				return false;
 			}
@@ -78,9 +79,9 @@ public class Game {
     	
     	if(!this.isFull()) return;
 
-		User black = null;
-		User white = null;
-		for(User player : players) {
+		Player black = null;
+		Player white = null;
+		for(Player player : players) {
 			if(black == null) {
 				black = player;
 			} else {

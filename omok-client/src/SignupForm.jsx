@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Center,
@@ -12,13 +12,12 @@ import {
     Stack
 } from "@chakra-ui/react";
 import axios from "axios";
-import { LoginContext } from "./LoginContext";
 
-export default function LoginForm() {
+export default function SignupForm() {
 
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const { setIsLogin, username, setUsername } = useContext(LoginContext);
-
+    const [email, setEmail] = useState("");
     const navigate = useNavigate();
 
     return (
@@ -29,7 +28,7 @@ export default function LoginForm() {
                 <CardBody>
                     <Stack spacing={15}>
                         <Box id="error" bg='lightblue' p={2} borderRadius={3} style={{ display: 'none' }}>
-                            <Text>아이디와 비밀번호를 정확히 입력했는지 확인해주세요.</Text>
+                            <Text>오류가 발생했습니다.</Text>
                         </Box>
                         <Input 
                             type="text"
@@ -37,6 +36,13 @@ export default function LoginForm() {
                             value={username} 
                             onChange={e => setUsername(e.target.value)}
                             placeholder="아이디"
+                        />
+                        <Input 
+                            type="text"
+                            name="email"
+                            value={email} 
+                            onChange={e => setEmail(e.target.value)}
+                            placeholder="이메일"
                         />
                         <Input 
                             type="password"
@@ -48,19 +54,19 @@ export default function LoginForm() {
                         <Button
                             bg="lightblue"
                             onClick={() => {
-                                axios.post("http://localhost:8080/member/login", {
+                                axios.post("http://localhost:8080/member/signup", {
                                     username: username,
+                                    email: email,
                                     password: password
-                                }).then(() => {
-                                    setIsLogin(true);
-                                    navigate("/main");
-                                }).catch(error => {
-                                    console.log(error)
+                                }).then(response => {
+                                    console.log(response);
+                                    navigate("/");
+                                }).catch(() => {
                                     document.getElementById("error").style.display = "block";
                                 })
                             }}
                         >
-                            로그인
+                            회원가입
                         </Button>
                     </Stack>
                 </CardBody>
