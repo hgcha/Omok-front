@@ -1,4 +1,4 @@
-package com.mysite.omok;
+package com.mysite.omok.User;
 
 import jakarta.websocket.Session;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
-public class User {
+public class Player {
 
 	private final String nickname;
 	private final Session session;
