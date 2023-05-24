@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Center,
@@ -12,12 +12,11 @@ import {
     Stack
 } from "@chakra-ui/react";
 import axios from "axios";
-import { LoginContext } from "./LoginContext";
 
 export default function LoginForm() {
 
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const { setIsLogin, username, setUsername } = useContext(LoginContext);
 
     const navigate = useNavigate();
 
@@ -52,10 +51,9 @@ export default function LoginForm() {
                                     username: username,
                                     password: password
                                 }).then(() => {
-                                    setIsLogin(true);
+                                    sessionStorage.setItem("username", username);
                                     navigate("/main");
                                 }).catch(error => {
-                                    console.log(error)
                                     document.getElementById("error").style.display = "block";
                                 })
                             }}

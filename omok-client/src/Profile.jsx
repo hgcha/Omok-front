@@ -1,7 +1,4 @@
-import {
-    useContext,
-    useState,
-} from "react";
+import { useState } from "react";
 import {
     Card,
     CardBody,
@@ -11,7 +8,6 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios"
 import { useEffect } from "react";
-import { LoginContext } from "./LoginContext";
 
 function convertDatetime(datetime) {
 
@@ -23,7 +19,7 @@ function convertDatetime(datetime) {
 export default function Profile() {
 
     const [member, setMember] = useState(null);
-    const { username } = useContext(LoginContext);
+    const username = sessionStorage.getItem("username");
 
     useEffect(() => {
         axios.get("http://localhost:8080/member?username=" + username)
@@ -32,7 +28,7 @@ export default function Profile() {
             }).catch(error => {
                 console.error(error);
             })
-    }, []);
+    }, [username]);
 
     return (
         <Center>

@@ -1,7 +1,6 @@
 import {
     useState, 
     useEffect,
-    useContext,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -15,13 +14,12 @@ import {
 import { connectToMainServer, disconnectFromMainServer, mainServerConnection } from "../network";
 import GameList from "./GameList";
 import UserList from "./UserList";
-import { LoginContext } from "../LoginContext";
 
 export default function Main() {
 
     const [userList, setUserList] = useState([]);
     const [gameList, setGameList] = useState([]);
-    const { username } = useContext(LoginContext);
+    const username = sessionStorage.getItem("username");
 
     useEffect(() => {
         connectToMainServer(username);
@@ -43,7 +41,7 @@ export default function Main() {
             disconnectFromMainServer();
             clearInterval(intervalId);
         };
-    }, []);
+    }, [username]);
 
     return (
         <Center>

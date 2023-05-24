@@ -35,6 +35,7 @@ export default function Display({ isFull, isAllReady, isPlaying, setIsPlaying, w
                 setCount(5);
             }
         }
+        // eslint-disable-next-line
     }, [isAllReady, isPlaying, winner, count, setIsPlaying]);
 
     let content;
@@ -44,13 +45,13 @@ export default function Display({ isFull, isAllReady, isPlaying, setIsPlaying, w
         } else {
             content = (winner === color ? "승리했습니다! " : "패배했습니다. ");
         }
-        content += count + "초 후에 새로운 게임이 시작됩니다.";
+        content += (count + "초 후에 새로운 게임이 시작됩니다.") 
     } else {
         if(isPlaying) {
             content = (turn === color ? "당신 차례입니다." : "상대 차례입니다.");
         } else {
             if(isAllReady) {
-                content = count + "초 후에 게임이 시작됩니다.";
+                content = (count + "초 후에 게임이 시작됩니다. ") + (color === "white" ? "백돌로 플레이합니다." : "흑돌로 플레이합니다.");
             } else {
                 if(isFull) {
                     content = "모두 준비되면 게임이 시작됩니다.";

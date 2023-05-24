@@ -26,12 +26,11 @@ import GameUserList from "./GameUserList";
 import decideWinner from "./decideWinner";
 import Display from "./Display";
 import axios from "axios";
-import { LoginContext } from "../LoginContext";
 import { PlayContext } from "../PlayContext";
 
 export default function Game() {
 
-    const { username } = useContext(LoginContext);
+    const username = sessionStorage.getItem("username");
     const { gameIndex } = useParams();
     const [board, setBoard] = useState(Array(19).fill(Array(19).fill(null)));
     const [turn, setTurn] = useState("black");
@@ -208,7 +207,7 @@ export default function Game() {
                         </Center>
                     </Stack>
                     <Spacer />
-                    <GameUserList gameUserList={gameUserList} />
+                    <GameUserList gameUserList={gameUserList} color={color}/>
                 </Flex>
             </Box>
         </Center>
